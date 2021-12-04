@@ -16,6 +16,4 @@ class User {
     @required this.cargo,
     this.avatarUrl,
   });
-
-  static User byIndex(int i) {}
 }

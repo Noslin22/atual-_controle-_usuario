@@ -11,7 +11,7 @@ class UserList extends StatelessWidget {
   Widget build(BuildContext context) {
     final Users users = Provider.of(context);
 
-    var user;
+    //var user;
     return Scaffold(
       appBar: AppBar(
         title: Text('Controle de Usuários'),
@@ -28,7 +28,7 @@ class UserList extends StatelessWidget {
       ),
       body: ListView.builder(
         itemCount: users.count,
-        itemBuilder: (ctx, i) => UserTile(user.byIndex(i)),
+        itemBuilder: (ctx, i) => UserTile(users.byIndex(i)),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:atual_controle_usuario/TelaInicial.dart';
+import 'package:atual_controle_usuario/views/user_form.dart';
 import 'package:flutter/material.dart';
 import 'package:atual_controle_usuario/provider/users.dart';
 import 'package:atual_controle_usuario/routes/app_routes.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           AppRoutes.HOME: (_) => TelaInicial(),
-          //AppRoutes.USER_FORM: (_) => UserForm()
+          AppRoutes.USER_FORM: (_) => UserForm()
         },
       ),
     );

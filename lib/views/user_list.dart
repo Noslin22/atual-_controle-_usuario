@@ -13,6 +13,28 @@ class UserList extends StatelessWidget {
 
     //var user;
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text('David'),
+              accountEmail: Text('David@atual.com'),
+            ),
+            ListTile(
+                leading: Icon(Icons.logout),
+                title: Text('Logout'),
+                onTap: () {
+                  Navigator.of(context).pushReplacementNamed('/');
+                }),
+            ListTile(
+                leading: Icon(Icons.store),
+                title: Text('Estoque'),
+                onTap: () {
+                  Navigator.of(context).pushReplacementNamed('ESTOQUE');
+                }),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Text('Controle de Usuários'),
         actions: <Widget>[

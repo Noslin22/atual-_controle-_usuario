@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:atual_controle_usuario/TelaLogin.dart' show LoginTela;
 
 class TelaInicial extends StatelessWidget {
@@ -9,4 +9,4 @@ class TelaInicial extends StatelessWidget {
       home: LoginTela(),
     );
   }
-}
+}*/

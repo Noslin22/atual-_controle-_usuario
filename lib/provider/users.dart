@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:atual_controle_usuario/data/dummy_users.dart';
 import 'package:atual_controle_usuario/models/user.dart';
 import 'package:flutter/material.dart';

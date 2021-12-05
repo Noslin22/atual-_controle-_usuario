@@ -1,7 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:atual_controle_usuario/models/user.dart';
 import 'package:atual_controle_usuario/provider/users.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class UserForm extends StatefulWidget {
@@ -11,9 +10,10 @@ class UserForm extends StatefulWidget {
 
 class _UserFormState extends State<UserForm> {
   final _form = GlobalKey<FormState>();
+
   final Map<String, String> _formData = {};
 
-  void _loadFormData(user) {
+  void _loadFormData(User user) {
     if (user != null) {
       _formData['id'] = user.id;
       _formData['name'] = user.name;
@@ -28,7 +28,7 @@ class _UserFormState extends State<UserForm> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final user = ModalRoute.of(context).settings.arguments;
+    final User user = ModalRoute.of(context).settings.arguments;
     _loadFormData(user);
   }
 
@@ -36,12 +36,14 @@ class _UserFormState extends State<UserForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de Usuário"),
+        title: Text('Formulário de Usuário'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () {
-              if (_form.currentState.validate()) {
+              final isValid = _form.currentState.validate();
+
+              if (isValid) {
                 _form.currentState.save();
 
                 Provider.of<Users>(context, listen: false).put(
@@ -66,13 +68,17 @@ class _UserFormState extends State<UserForm> {
         child: Form(
           key: _form,
           child: Column(
-            children: [
+            children: <Widget>[
               TextFormField(
-                decoration: InputDecoration(labelText: 'Nome'),
                 initialValue: _formData['name'],
+                decoration: InputDecoration(labelText: 'Nome'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Nome inválido!';
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Nome inválido';
+                  }
+
+                  if (value.trim().length < 3) {
+                    return 'Nome muito pequeno. No mínimo 3 letras.';
                   }
 
                   return null;
@@ -80,30 +86,23 @@ class _UserFormState extends State<UserForm> {
                 onSaved: (value) => _formData['name'] = value,
               ),
               TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(labelText: 'E-mail'),
                 initialValue: _formData['email'],
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "E-mail inválido!";
-                  }
-                  return null;
-                },
+                decoration: InputDecoration(labelText: 'E-mail'),
                 onSaved: (value) => _formData['email'] = value,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
                 initialValue: _formData['password'],
+                decoration: InputDecoration(labelText: 'Password'),
                 onSaved: (value) => _formData['password'] = value,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Cargo:'),
                 initialValue: _formData['cargo'],
+                decoration: InputDecoration(labelText: 'Cargo'),
                 onSaved: (value) => _formData['cargo'] = value,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Avatar URL'),
                 initialValue: _formData['avatarUrl'],
+                decoration: InputDecoration(labelText: 'URL do Avatar'),
                 onSaved: (value) => _formData['avatarUrl'] = value,
               ),
             ],

@@ -1,9 +1,8 @@
-import 'package:atual_controle_usuario/views/user_form.dart';
 import 'package:flutter/material.dart';
 import 'package:atual_controle_usuario/components/user_tile.dart';
-
+//import 'package:atual_controle_usuario/models/user.dart';
 import 'package:atual_controle_usuario/provider/users.dart';
-
+import 'package:atual_controle_usuario/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 
 class UserList extends StatelessWidget {
@@ -11,7 +10,6 @@ class UserList extends StatelessWidget {
   Widget build(BuildContext context) {
     final Users users = Provider.of(context);
 
-    //var user;
     return Scaffold(
       drawer: Drawer(
         child: Column(
@@ -30,20 +28,18 @@ class UserList extends StatelessWidget {
                 leading: Icon(Icons.store),
                 title: Text('Estoque'),
                 onTap: () {
-                  Navigator.of(context).pushReplacementNamed('ESTOQUE');
+                  Navigator.of(context).pushReplacementNamed('/estoque');
                 }),
           ],
         ),
       ),
       appBar: AppBar(
-        title: Text('Controle de Usuários'),
+        title: Text('Lista de Usuários'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => UserForm()),
-              );
+              Navigator.of(context).pushNamed(AppRoutes.USER_FORM);
             },
           ),
         ],

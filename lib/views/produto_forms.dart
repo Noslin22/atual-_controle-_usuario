@@ -20,6 +20,7 @@ class _ProdutoFormState extends State<ProdutoForm> {
       _pformData['quantidade'] = produto.quantidade;
       _pformData['valor'] = produto.valor;
       _pformData['descricao'] = produto.descricao;
+      _pformData['status'] = produto.status;
       _pformData['avatarUrl'] = produto.avatarUrls;
     }
   }
@@ -53,6 +54,7 @@ class _ProdutoFormState extends State<ProdutoForm> {
                     quantidade: _pformData['quantidade'],
                     valor: _pformData['valor'],
                     descricao: _pformData['descricao'],
+                    status: _pformData['status'],
                     avatarUrls: _pformData['avatarUrl'],
                   ),
                 );
@@ -99,6 +101,11 @@ class _ProdutoFormState extends State<ProdutoForm> {
                 initialValue: _pformData['descricao'],
                 decoration: InputDecoration(labelText: 'Descrição'),
                 onSaved: (value) => _pformData['descricao'] = value,
+              ),
+              TextFormField(
+                initialValue: _pformData['status'],
+                decoration: InputDecoration(labelText: 'Status'),
+                onSaved: (value) => _pformData['status'] = value,
               ),
               TextFormField(
                 initialValue: _pformData['avatarUrls'],

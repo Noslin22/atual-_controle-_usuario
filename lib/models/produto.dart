@@ -7,6 +7,7 @@ class Produto {
   final String valor;
   final String descricao;
   final String avatarUrls;
+  final String status;
 
   const Produto({
     this.id,
@@ -14,6 +15,7 @@ class Produto {
     @required this.quantidade,
     @required this.valor,
     @required this.descricao,
+    @required this.status,
     this.avatarUrls,
   });
 }

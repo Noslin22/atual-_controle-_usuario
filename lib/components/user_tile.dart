@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:atual_controle_usuario/models/user.dart';
 import 'package:atual_controle_usuario/provider/users.dart';
@@ -55,6 +56,14 @@ class UserTile extends StatelessWidget {
                 ).then((confimed) {
                   if (confimed) {
                     Provider.of<Users>(context, listen: false).remove(user);
+                    FirebaseFirestore db = FirebaseFirestore.instance;
+                    db
+                        .collection("users")
+                        .where("name", isEqualTo: user.name)
+                        .get()
+                        .then(
+                          (value) => value.docs.single.reference.delete(),
+                        );
                   }
                 });
               },

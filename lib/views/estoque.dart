@@ -32,7 +32,7 @@ class Estoque extends StatelessWidget {
         ),
       ),
       appBar: AppBar(
-        title: Text('Lista de Usuários'),
+        title: Text('Estoque'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),

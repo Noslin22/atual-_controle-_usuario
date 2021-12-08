@@ -6,6 +6,7 @@ import 'package:atual_controle_usuario/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 
 class UserList extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     final Users users = Provider.of(context);

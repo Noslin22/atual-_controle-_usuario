@@ -17,7 +17,7 @@ class ProdutoTile extends StatelessWidget {
     return ListTile(
       leading: avatar,
       title: Text(produto.nome),
-      subtitle: Text(produto.valor),
+      subtitle: Text(produto.status),
       trailing: Container(
         width: 100,
         child: Row(

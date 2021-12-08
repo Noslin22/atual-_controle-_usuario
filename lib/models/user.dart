@@ -16,4 +16,15 @@ class User {
     @required this.cargo,
     this.avatarUrl,
   });
+
+  Map<String, String> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'password': password,
+      'cargo': cargo,
+      'avatarUrl': avatarUrl,
+    };
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:atual_controle_usuario/models/user.dart';
 import 'package:atual_controle_usuario/provider/users.dart';
@@ -10,7 +11,7 @@ class UserForm extends StatefulWidget {
 
 class _UserFormState extends State<UserForm> {
   final _form = GlobalKey<FormState>();
-
+  User editUser;
   final Map<String, String> _formData = {};
 
   void _loadFormData(User user) {
@@ -28,8 +29,8 @@ class _UserFormState extends State<UserForm> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final User user = ModalRoute.of(context).settings.arguments;
-    _loadFormData(user);
+    editUser = ModalRoute.of(context).settings.arguments;
+    _loadFormData(editUser);
   }
 
   @override
@@ -45,18 +46,31 @@ class _UserFormState extends State<UserForm> {
 
               if (isValid) {
                 _form.currentState.save();
-
-                Provider.of<Users>(context, listen: false).put(
-                  User(
-                    id: _formData['id'],
-                    name: _formData['name'],
-                    email: _formData['email'],
-                    password: _formData['password'],
-                    cargo: _formData['cargo'],
-                    avatarUrl: _formData['avatarUrl'],
-                  ),
+                User user = User(
+                  id: _formData['id'],
+                  name: _formData['name'],
+                  email: _formData['email'],
+                  password: _formData['password'],
+                  cargo: _formData['cargo'],
+                  avatarUrl: _formData['avatarUrl'],
                 );
+                if (editUser == null) {
+                  Provider.of<Users>(context, listen: false).put(user);
 
+                  FirebaseFirestore db = FirebaseFirestore.instance;
+                  db.collection("users").add(user.toMap());
+                } else {
+                  FirebaseFirestore db = FirebaseFirestore.instance;
+                  db
+                      .collection("users")
+                      .where("name", isEqualTo: editUser.name)
+                      .get()
+                      .then(
+                        (value) => value.docs.single.reference.update(
+                          user.toMap(),
+                        ),
+                      );
+                }
                 Navigator.of(context).pop();
               }
             },

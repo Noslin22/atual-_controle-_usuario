@@ -34,6 +34,7 @@ class Produtos with ChangeNotifier {
           quantidade: produto.quantidade,
           valor: produto.valor,
           descricao: produto.descricao,
+          status: produto.status,
           avatarUrls: produto.avatarUrls,
         ),
       );
@@ -47,6 +48,7 @@ class Produtos with ChangeNotifier {
           quantidade: produto.quantidade,
           valor: produto.valor,
           descricao: produto.descricao,
+          status: produto.status,
           avatarUrls: produto.avatarUrls,
         ),
       );

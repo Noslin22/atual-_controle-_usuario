@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:atual_controle_usuario/models/produto.dart';
-import 'package:atual_controle_usuario/provider/produtos.dart';
-import 'package:provider/provider.dart';
+
+import '../globals.dart';
 
 class ProdutoForm extends StatefulWidget {
   @override
@@ -11,6 +11,7 @@ class ProdutoForm extends StatefulWidget {
 class _ProdutoFormState extends State<ProdutoForm> {
   final _pform = GlobalKey<FormState>();
 
+  Produto editProduto;
   final Map<String, String> _pformData = {};
 
   void _loadFormData(Produto produto) {
@@ -29,8 +30,8 @@ class _ProdutoFormState extends State<ProdutoForm> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final Produto produto = ModalRoute.of(context).settings.arguments;
-    _loadFormData(produto);
+    editProduto = ModalRoute.of(context).settings.arguments;
+    _loadFormData(editProduto);
   }
 
   @override
@@ -47,17 +48,28 @@ class _ProdutoFormState extends State<ProdutoForm> {
               if (isValid) {
                 _pform.currentState.save();
 
-                Provider.of<Produtos>(context, listen: false).put(
-                  Produto(
-                    id: _pformData['id'],
-                    nome: _pformData['nome'],
-                    quantidade: _pformData['quantidade'],
-                    valor: _pformData['valor'],
-                    descricao: _pformData['descricao'],
-                    status: _pformData['status'],
-                    avatarUrls: _pformData['avatarUrl'],
-                  ),
+                Produto produto = Produto(
+                  id: _pformData['id'],
+                  nome: _pformData['nome'],
+                  quantidade: _pformData['quantidade'],
+                  valor: _pformData['valor'],
+                  descricao: _pformData['descricao'],
+                  status: _pformData['status'],
+                  avatarUrls: _pformData['avatarUrls'],
                 );
+                if (editProduto == null) {
+                  db.collection("produtos").add(produto.toMap());
+                } else {
+                  db
+                      .collection("produtos")
+                      .where("nome", isEqualTo: editProduto.nome)
+                      .get()
+                      .then(
+                        (value) => value.docs.single.reference.update(
+                          produto.toMap(),
+                        ),
+                      );
+                }
 
                 Navigator.of(context).pop();
               }

@@ -1,13 +1,14 @@
+import 'package:atual_controle_usuario/models/produto.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:atual_controle_usuario/provider/produtos.dart';
 import 'package:atual_controle_usuario/components/produto_tile.dart';
-import 'package:provider/provider.dart';
 import 'package:atual_controle_usuario/routes/app_routes.dart';
+
+import '../globals.dart';
 
 class Estoque extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Produtos produtos = Provider.of(context);
     return Scaffold(
       drawer: Drawer(
         child: Column(
@@ -42,9 +43,39 @@ class Estoque extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: produtos.count,
-        itemBuilder: (ctx, i) => ProdutoTile(produtos.byIndex(i)),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: db.collection("produtos").snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                "Ocorreu um erro, tente novamente mais tarde.\n${snapshot.error.toString()}",
+                textAlign: TextAlign.center,
+              ),
+            );
+          } else if (snapshot.hasData) {
+            List<QueryDocumentSnapshot> produtos = snapshot.data.docs;
+            return ListView.builder(
+              itemCount: produtos.length,
+              itemBuilder: (ctx, i) {
+                QueryDocumentSnapshot produto = produtos[i];
+                return ProdutoTile(
+                  Produto(
+                    id: produto["id"],
+                    nome: produto["nome"],
+                    quantidade: produto["quantidade"],
+                    valor: produto["valor"],
+                    descricao: produto["descricao"],
+                    status: produto["status"],
+                    avatarUrls: produto["avatarUrls"],
+                  ),
+                );
+              },
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }

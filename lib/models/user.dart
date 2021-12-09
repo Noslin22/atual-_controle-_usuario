@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class User {
-  final String id;
   final String name;
   final String email;
   final String password;
@@ -9,7 +8,6 @@ class User {
   final String avatarUrl;
 
   const User({
-    this.id,
     @required this.name,
     @required this.email,
     @required this.password,
@@ -19,7 +17,6 @@ class User {
 
   Map<String, String> toMap() {
     return {
-      'id': id,
       'name': name,
       'email': email,
       'password': password,

@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:atual_controle_usuario/models/user.dart';
-import 'package:atual_controle_usuario/provider/users.dart';
-import 'package:provider/provider.dart';
+import '../globals.dart';
 
 class UserForm extends StatefulWidget {
   @override
@@ -16,7 +14,6 @@ class _UserFormState extends State<UserForm> {
 
   void _loadFormData(User user) {
     if (user != null) {
-      _formData['id'] = user.id;
       _formData['name'] = user.name;
       _formData['email'] = user.email;
       _formData['password'] = user.password;
@@ -47,7 +44,6 @@ class _UserFormState extends State<UserForm> {
               if (isValid) {
                 _form.currentState.save();
                 User user = User(
-                  id: _formData['id'],
                   name: _formData['name'],
                   email: _formData['email'],
                   password: _formData['password'],
@@ -55,12 +51,8 @@ class _UserFormState extends State<UserForm> {
                   avatarUrl: _formData['avatarUrl'],
                 );
                 if (editUser == null) {
-                  Provider.of<Users>(context, listen: false).put(user);
-
-                  FirebaseFirestore db = FirebaseFirestore.instance;
                   db.collection("users").add(user.toMap());
                 } else {
-                  FirebaseFirestore db = FirebaseFirestore.instance;
                   db
                       .collection("users")
                       .where("name", isEqualTo: editUser.name)

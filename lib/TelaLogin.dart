@@ -1,4 +1,6 @@
+import 'package:atual_controle_usuario/globals.dart';
 import 'package:atual_controle_usuario/views/user_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class LoginTela extends StatefulWidget {
@@ -9,14 +11,20 @@ class LoginTela extends StatefulWidget {
 }
 
 class _LoginTelaState extends State<LoginTela> {
+  final FirebaseFirestore db = FirebaseFirestore.instance;
+
   String login = '';
   String senha = '';
 
   Widget _body() {
     return Material(
-      child: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -35,8 +43,16 @@ class _LoginTelaState extends State<LoginTela> {
                   login = text;
                 },
                 keyboardType: TextInputType.text,
+                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                    labelText: 'Login:', border: OutlineInputBorder()),
+                  labelText: 'Login:',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  filled: true,
+                  fillColor: Colors.blueGrey.withOpacity(0.7),
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
               ),
               SizedBox(height: 15),
               TextField(
@@ -45,26 +61,57 @@ class _LoginTelaState extends State<LoginTela> {
                 },
                 keyboardType: TextInputType.text,
                 obscureText: true,
+                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                    labelText: 'Senha:', border: OutlineInputBorder()),
+                  labelText: 'Senha:',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  filled: true,
+                  fillColor: Colors.blueGrey.withOpacity(0.7),
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
               ),
               SizedBox(height: 15),
               // ignore: deprecated_member_use
               RaisedButton(
                 onPressed: () {
-                  if (login == 'david' && senha == '123456') {
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => UserList()));
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: Text('LOGIN OU SENHA INVÁLIDO!'),
-                      ),
-                    );
-                  }
+                  db
+                      .collection("users")
+                      .where("email", isEqualTo: login)
+                      .get()
+                      .then((value) {
+                    if (value.docs.isNotEmpty &&
+                        value.docs.single.data()["password"] == senha) {
+                      idUser = value.docs.single.id;
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => UserList(),
+                        ),
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text('LOGIN OU SENHA INVÁLIDO!'),
+                        ),
+                      );
+                    }
+                  });
+                  // if (login == 'david' && senha == '123456') {
+                  //   Navigator.of(context).pushReplacement(
+                  //       MaterialPageRoute(builder: (context) => UserList()));
+                  // } else {
+                  //   showDialog(
+                  //     context: context,
+                  //     builder: (ctx) => AlertDialog(
+                  //       title: Text('LOGIN OU SENHA INVÁLIDO!'),
+                  //     ),
+                  //   );
+                  // }
                 },
-                child: Text('Entrar'),
+                color: Colors.blueGrey,
+                child: Text('Entrar', style: TextStyle(color: Colors.white)),
               ),
               Container(
                 width: 200,
@@ -81,14 +128,7 @@ class _LoginTelaState extends State<LoginTela> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Center(child: SizedBox(child: Text('Login')))),
-      body: Stack(
-        children: [
-          SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Image.asset('images/background.jpg', fit: BoxFit.cover)),
-          _body(),
-        ],
-      ),
+      body: _body(),
     );
   }
 

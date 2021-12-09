@@ -1,24 +1,36 @@
+import 'package:atual_controle_usuario/models/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:atual_controle_usuario/components/user_tile.dart';
-//import 'package:atual_controle_usuario/models/user.dart';
-import 'package:atual_controle_usuario/provider/users.dart';
 import 'package:atual_controle_usuario/routes/app_routes.dart';
-import 'package:provider/provider.dart';
+import '../globals.dart';
 
 class UserList extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
-    final Users users = Provider.of(context);
-
     return Scaffold(
       drawer: Drawer(
         child: Column(
           children: [
-            UserAccountsDrawerHeader(
-              accountName: Text('David'),
-              accountEmail: Text('David@atual.com'),
-            ),
+            StreamBuilder<DocumentSnapshot<Map>>(
+                stream: db.collection("users").doc(idUser).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        "Ocorreu um erro, tente novamente mais tarde.\n${snapshot.error.toString()}",
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  } else if (snapshot.hasData) {
+                    return UserAccountsDrawerHeader(
+                      accountName: Text(snapshot.data.data()["name"]),
+                      accountEmail: Text(snapshot.data.data()["email"]),
+                    );
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                }),
             ListTile(
                 leading: Icon(Icons.logout),
                 title: Text('Logout'),
@@ -45,9 +57,37 @@ class UserList extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: users.count,
-        itemBuilder: (ctx, i) => UserTile(users.byIndex(i)),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: db.collection("users").snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                "Ocorreu um erro, tente novamente mais tarde.\n${snapshot.error.toString()}",
+                textAlign: TextAlign.center,
+              ),
+            );
+          } else if (snapshot.hasData) {
+            List<QueryDocumentSnapshot> users = snapshot.data.docs;
+            return ListView.builder(
+              itemCount: users.length,
+              itemBuilder: (ctx, i) {
+                QueryDocumentSnapshot user = users[i];
+                return UserTile(
+                  User(
+                    name: user["name"],
+                    email: user["email"],
+                    password: user["password"],
+                    cargo: user["cargo"],
+                    avatarUrl: user["avatarUrl"],
+                  ),
+                );
+              },
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }

@@ -18,4 +18,16 @@ class Produto {
     @required this.status,
     this.avatarUrls,
   });
+  
+  Map<String, String> toMap() {
+    return {
+      'id': id,
+      'nome': nome,
+      'quantidade': quantidade,
+      'valor': valor,
+      'descricao': descricao,
+      'status': status,
+      'avatarUrls': avatarUrls,
+    };
+  }
 }

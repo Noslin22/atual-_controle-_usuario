@@ -1,8 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:atual_controle_usuario/models/produto.dart';
-import 'package:atual_controle_usuario/provider/produtos.dart';
 import 'package:atual_controle_usuario/routes/app_routes.dart';
-import 'package:provider/provider.dart';
 
 class ProdutoTile extends StatelessWidget {
   final Produto produto;
@@ -54,8 +53,14 @@ class ProdutoTile extends StatelessWidget {
                   ),
                 ).then((confimed) {
                   if (confimed) {
-                    Provider.of<Produtos>(context, listen: false)
-                        .remove(produto);
+                        FirebaseFirestore db = FirebaseFirestore.instance;
+                    db
+                        .collection("produtos")
+                        .where("nome", isEqualTo: produto.nome)
+                        .get()
+                        .then(
+                          (value) => value.docs.single.reference.delete(),
+                        );
                   }
                 });
               },
